@@ -1,37 +1,38 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { Button, Input } from 'react-native-elements'
 import { auth } from '../../firebase';
 
-const Register = () => {
+const Register = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [imageURL, setimageURL] = useState('');
     const [password, setPassword] = useState('');
-    
+
     const register = () => {
+
         auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 // Signed in 
                 var user = userCredential.user;
                 user.updateProfile({
-                    displayName:name,
+                    displayName: name,
                     photoURL: imageURL ? imageURL : "https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-avatar-icon-png-image_695765.jpg"
                 }).then(() => {
-                    // Update successful
-                    // ...
+
                 }).catch((error) => {
                     // An error occurred
                     // ...
                 });
+                navigation.popToTop()
             })
             .catch((error) => {
                 var errorMessage = error.message;
                 alert(errorMessage)
             });
     }
-  return (
-    <View style={styles.container}>
+    return (
+        <View style={styles.container}>
             <Input
                 placeholder='Enter your name'
                 label="Name"
@@ -61,9 +62,11 @@ const Register = () => {
                 value={imageURL}
                 onChangeText={text => setimageURL(text)}
             />
-            <Button title="register" style={styles.button} onPress={register}></Button>
+            <TouchableOpacity style={styles.button}>
+                <Button title="Register" style={styles.button} onPress={register}></Button>
+            </TouchableOpacity>
         </View>
-  )
+    )
 }
 
 export default Register
